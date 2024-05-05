@@ -60,4 +60,67 @@ Q7: What is the source IP and port of packet 65?
 
 The source IP and port of packet 65 are 145.254.160.237:3372.
 
+<h2>Task 2: Writing IDS Rules (FTP) </h2>
 
+In this task, we'll focus on writing IDS rules to detect FTP traffic. 
+
+Q1: Write rules to detect “all TCP port 21” traffic in the given pcap.
+Add the following rules to the local.rules file:
+plaintext
+Copy code
+Rule 1: Inbound FTP traffic
+
+alert TCP any 21 -> any any (msg: "FTP traffic Detected"; sid: 100001; rev: 1;)
+
+Rule 2: Outbound FTP traffic
+
+alert TCP any any -> any 21 (msg: "FTP traffic Detected"; sid: 100002; rev: 1;)
+
+![Screenshot 2024-05-05 4 05 02 PM](https://github.com/mmedinabet/Snort-Intrusion-Detection-System-Lab/assets/142737434/900cd267-dbc1-407b-8865-412e40550b77)
+
+![Screenshot 2024-05-05 4 20 54 PM](https://github.com/mmedinabet/Snort-Intrusion-Detection-System-Lab/assets/142737434/7d04e345-0789-480a-bd41-8e057bda8632)
+
+
+![Screenshot 2024-05-05 4 19 32 PM](https://github.com/mmedinabet/Snort-Intrusion-Detection-System-Lab/assets/142737434/bb9fe478-e914-4269-80db-2e01bab33e46)
+
+After running Snort against the pcap file (ftp-png-gif.pcap), the number of detected packets is 614.
+
+Q2: What is the FTP service name?
+Run the following command to find the FTP service name:
+
+plaintext
+Copy code
+sudo snort -r snort.log.1671731339 -X -n 10
+The FTP service name is "Microsoft FTP service."
+
+Q3: Write a rule to detect failed FTP login attempts in the given pcap.
+Add the following rule to the local.rules file:
+
+plaintext
+Copy code
+alert tcp any any <> any 21 (msg: "Failed FTP Login"; content:"530 User"; sid: 100003; rev: 1;)
+The number of detected packets for failed FTP login attempts is 41.
+
+Q4: Write a rule to detect successful FTP logins in the given pcap.
+Add the following rule to the local.rules file:
+
+plaintext
+Copy code
+alert TCP any any <> any 21 (msg:"FTP Success Login"; content:"230 User"; sid:100004; rev:1;)
+The number of detected packets for successful FTP logins is 1.
+
+Q5: Write a rule to detect failed FTP login attempts with a valid username but a bad password or no password.
+Add the following rule to the local.rules file:
+
+plaintext
+Copy code
+alert tcp any any <> any 21 (msg: "FTP Failed Login-Bad or No Password"; content:"331 Password"; sid: 100005; rev: 1;)
+The number of detected packets for failed FTP login attempts with bad or no password is 42.
+
+Q6: Write a rule to detect failed FTP login attempts with the username "Administrator" but a bad password or no password.
+Add the following rule to the local.rules file:
+
+plaintext
+Copy code
+alert tcp any any <> any 21 (msg: "Failed Admin Login Attempt"; content:"Administrator"; content:"331 Password"; sid: 100006; rev: 1;)
+The number of detected packets for failed FTP login attempts with the username "Administrator" is 7.
