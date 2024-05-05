@@ -86,11 +86,11 @@ alert TCP any any -> any 21 (msg: "FTP traffic Detected"; sid: 100002; rev: 1;)
 After running Snort against the pcap file (ftp-png-gif.pcap), the number of detected packets is 614.
 
 Q2: What is the FTP service name?
-Run the following command to find the FTP service name:
 
-plaintext
-Copy code
-sudo snort -r snort.log.1671731339 -X -n 10
+![Screenshot 2024-05-05 4 33 07 PM](https://github.com/mmedinabet/Snort-Intrusion-Detection-System-Lab/assets/142737434/80120a86-ff93-4e1b-bc7a-6098ac6af9bb)
+
+![Screenshot 2024-05-05 4 31 51 PM](https://github.com/mmedinabet/Snort-Intrusion-Detection-System-Lab/assets/142737434/cb2fd06f-bc8b-4f44-9afd-2d0892c52774)
+
 The FTP service name is "Microsoft FTP service."
 
 Q3: Write a rule to detect failed FTP login attempts in the given pcap.
@@ -98,7 +98,10 @@ Add the following rule to the local.rules file:
 
 plaintext
 Copy code
-alert tcp any any <> any 21 (msg: "Failed FTP Login"; content:"530 User"; sid: 100003; rev: 1;)
+
+sudo snort -c local.rules -A full -l . -r ftp-png-gif.pcap
+
+
 The number of detected packets for failed FTP login attempts is 41.
 
 Q4: Write a rule to detect successful FTP logins in the given pcap.
